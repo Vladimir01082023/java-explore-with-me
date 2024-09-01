@@ -35,10 +35,6 @@ public class StatsServiceImpl implements StatsService {
 //        if (start == null || end == null) {
 //            throw new EmptyStatsException("Error: start or end can't be null!");
 //        }
-        if (statsRepository.getStatsByUris(start, end, uris).isEmpty()) {
-            log.info("No hits found");
-            throw new EmptyStatsException("No hits are in DB");
-        }
 
         if (uris == null || uris.isEmpty()) {
             if (unique) {
