@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.practicum.EndpointHit;
 import ru.practicum.ViewStats;
-import ru.practicum.exception.EmptyStatsException;
 import ru.practicum.mapper.StatsMapper;
 import ru.practicum.model.Stats;
 import ru.practicum.repository.StatsRepository;
@@ -32,9 +31,6 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
-//        if (start == null || end == null) {
-//            throw new EmptyStatsException("Error: start or end can't be null!");
-//        }
 
         if (uris == null || uris.isEmpty()) {
             if (unique) {
