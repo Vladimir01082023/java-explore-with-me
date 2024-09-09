@@ -3,6 +3,7 @@ package ru.practicum.user.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.ValidationException;
@@ -11,9 +12,6 @@ import ru.practicum.user.mapper.UserMapper;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 import ru.practicum.util.CheckExistence;
-import org.springframework.data.domain.PageRequest;
-import org.apache.commons.validator.routines.EmailValidator;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -49,17 +47,15 @@ public class UserServiceImpl implements UserService {
             throw new ConflictException("Email or name is required");
         }
 
-//        if (userDto.getEmail().substring(0, userDto.getEmail().indexOf("@")).length() > 64){
-//            throw new ValidationException("Email localpart cannot be longer than 64 characters");
-//        }
-//        if (userDto.getEmail().substring(userDto.getEmail().indexOf("@"), userDto.getEmail().indexOf(".ru")).length() > 63) {
-//            throw new ValidationException("Email domain cannot be longer than 64 characters");
-//        }
-
-        EmailValidator emailValidator = EmailValidator.getInstance();
-
-        if (!emailValidator.isValid(userDto.getEmail())) {
-            throw new ValidationException("Email is not valid");
+        if (userDto.getEmail().substring(0, userDto.getEmail().indexOf("@")).length() > 64) {
+            throw new ValidationException("Email localpart cannot be longer than 64 characters");
+        }
+        String domainPartOfEmail = userDto.getEmail().substring(userDto.getEmail().indexOf("@") + 1,
+                userDto.getEmail().length() - 1);
+        if (!domainPartOfEmail.contains(".")) {
+            if (domainPartOfEmail.length() > 63) {
+                throw new ValidationException("Email domain cannot be longer than 64 characters");
+            }
         }
 
         Optional<User> userOpt = userRepository.findByName(userDto.getName());
