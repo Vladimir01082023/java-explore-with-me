@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
-import ru.practicum.category.model.Category;
 import ru.practicum.event.model.Event;
 
 import java.util.List;

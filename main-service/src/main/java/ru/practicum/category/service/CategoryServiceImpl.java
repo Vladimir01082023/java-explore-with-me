@@ -31,7 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public CategoryDto createCategory(NewCategoryDto newCategoryDto) {
-        if(newCategoryDto.getName().isEmpty() || newCategoryDto.getName().isBlank()){
+        if (newCategoryDto.getName().isEmpty() || newCategoryDto.getName().isBlank()) {
             throw new ValidationException("Category name cannot be empty or null");
         }
         if (newCategoryDto.getName().length() > 50) {
@@ -76,7 +76,9 @@ public class CategoryServiceImpl implements CategoryService {
 
         category.setName(newCategoryDto.getName());
         log.info("Update category: {}", checkExistence.getCategory(catId));
-        return CategoryMapper.toCategoryDto(categoryRepository.save(category));
+        return CategoryMapper.toCategoryDto(categoryRepository.save(category)
+
+        );
     }
 
     @Override
