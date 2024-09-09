@@ -4,7 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
-import ru.practicum.category.model.Category;
 import jakarta.persistence.*;
 import ru.practicum.event.model.Event;
 import ru.practicum.request.enums.RequestStatus;
