@@ -42,8 +42,8 @@ public class Event {
     @Column(name = "event_date", nullable = false)
     private LocalDateTime eventDate;
 
-    @OneToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "initiator_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "initiator_id", referencedColumnName = "id", nullable = false)
     private User initiator;
 
     @OneToOne(cascade = {CascadeType.ALL})

@@ -5,17 +5,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.exception.ConflictException;
+import ru.practicum.exception.ValidationException;
 import ru.practicum.user.dto.UserDto;
-import ru.practicum.user.dto.UserShortDto;
 import ru.practicum.user.mapper.UserMapper;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 import ru.practicum.util.CheckExistence;
 import org.springframework.data.domain.PageRequest;
+import org.apache.commons.validator.routines.EmailValidator;
 
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -42,13 +44,30 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto createUser(UserShortDto userShortDto) {
-        Optional<User> userOpt = userRepository.findByName(userShortDto.getName());
+    public UserDto createUser(UserDto userDto) {
+        if (userDto.getEmail() == null || userDto.getName() == null) {
+            throw new ConflictException("Email or name is required");
+        }
+
+//        if (userDto.getEmail().substring(0, userDto.getEmail().indexOf("@")).length() > 64){
+//            throw new ValidationException("Email localpart cannot be longer than 64 characters");
+//        }
+//        if (userDto.getEmail().substring(userDto.getEmail().indexOf("@"), userDto.getEmail().indexOf(".ru")).length() > 63) {
+//            throw new ValidationException("Email domain cannot be longer than 64 characters");
+//        }
+
+        EmailValidator emailValidator = EmailValidator.getInstance();
+
+        if (!emailValidator.isValid(userDto.getEmail())) {
+            throw new ValidationException("Email is not valid");
+        }
+
+        Optional<User> userOpt = userRepository.findByName(userDto.getName());
         if (userOpt.isPresent()) {
             throw new ConflictException(String.format("User with name %s already exists",
-                    userShortDto.getName()));
+                    userDto.getName()));
         }
-        User user = userRepository.save(UserMapper.toUser(userShortDto));
+        User user = userRepository.save(UserMapper.toUser(userDto));
         log.info("User was created [{}]", UserMapper.toUserDto(user));
         return UserMapper.toUserDto(user);
     }
@@ -61,4 +80,9 @@ public class UserServiceImpl implements UserService {
         log.info("User [{}] was deleted", id);
     }
 
+    public static boolean patternMatches(String emailAddress, String regexPattern) {
+        return Pattern.compile(regexPattern)
+                .matcher(emailAddress)
+                .matches();
+    }
 }

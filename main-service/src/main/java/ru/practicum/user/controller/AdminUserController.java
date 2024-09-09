@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.user.dto.UserDto;
-import ru.practicum.user.dto.UserShortDto;
 import ru.practicum.user.service.UserService;
 
 import java.util.List;
@@ -31,9 +30,9 @@ public class AdminUserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto create(@Valid @RequestBody UserShortDto userShortDto) {
+    public UserDto create(@Valid @RequestBody UserDto userDto) {
         log.info("CREATING ALL USERS");
-        return userService.createUser(userShortDto);
+        return userService.createUser(userDto);
     }
 
     @DeleteMapping("/{userId}")

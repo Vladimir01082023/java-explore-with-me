@@ -2,7 +2,7 @@ package ru.practicum.event.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +36,7 @@ import static ru.practicum.event.enums.Sort.VIEWS;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EventServiceImpl implements EventService {
 
     private static final LocalDateTime CURRENT_TIME = LocalDateTime.now();
@@ -49,7 +50,7 @@ public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
-    private StatsClient statsClient;
+    private final StatsClient statsClient;
     private final CheckExistence checkExistence;
     private final LocationRepository locationRepository;
     private final CategoryService categoryService;
@@ -190,6 +191,7 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public EventFullDto addEventByUserId(Long userId, NewEventDto newEventDto) {
+
         User user = checkExistence.getUser(userId);
 
         if (newEventDto.getEventDate().isBefore(CURRENT_TIME.plusHours(2))) {
@@ -206,6 +208,7 @@ public class EventServiceImpl implements EventService {
 
         event.setCategory(category);
         event.setInitiator(user);
+
         return EventMapper.toEventFullDto(eventRepository.save(event));
     }
 
@@ -225,7 +228,7 @@ public class EventServiceImpl implements EventService {
                                           Long eventId,
                                           UpdateEventUserRequest request) {
 
-        Event event = EventMapper.toEvent(getEventByUserId(userId, eventId), userId);
+        Event event = EventMapper.toEvent(getEventByUserId(userId, eventId)); //TODO
 
         checkEventStatus(event, request, List.of(State.PENDING, State.CANCELED));
 
@@ -237,7 +240,6 @@ public class EventServiceImpl implements EventService {
         if (StateAction.CANCEL_REVIEW == request.getStateAction()) {
             event.setState(State.CANCELED);
         }
-
 
         return EventMapper.toEventFullDto(eventRepository.save(updateEvent(event, request)));
     }
@@ -320,7 +322,7 @@ public class EventServiceImpl implements EventService {
         }
     }
 
-    private void checkAnnotaion(UpdateEventRequest request) {
+    private void checkAnnotation(UpdateEventRequest request) {
         if (request.getAnnotation().length() > ANNOTATION_MAX_LENGTH || request.getAnnotation().length() < ANNOTATION_MIN_LENGTH) {
             throw new ValidationException("Can't be shorter than " + ANNOTATION_MIN_LENGTH + " and longer than " + ANNOTATION_MAX_LENGTH);
         }
@@ -335,7 +337,7 @@ public class EventServiceImpl implements EventService {
     private Event constructEvent(Event event, UpdateEventRequest request) {
 
         if (request.getAnnotation() != null) {
-            checkAnnotaion(request);
+            checkAnnotation(request);
             event.setAnnotation(request.getAnnotation());
         }
 

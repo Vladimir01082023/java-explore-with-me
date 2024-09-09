@@ -59,7 +59,7 @@ public class EventMapper {
         return event;
     }
 
-    public static Event toEvent(EventFullDto eventFullDto, Long userId) {
+    public static Event toEvent(EventFullDto eventFullDto) {
         Event event = new Event();
         event.setId(eventFullDto.getId());
         event.setAnnotation(eventFullDto.getAnnotation());
