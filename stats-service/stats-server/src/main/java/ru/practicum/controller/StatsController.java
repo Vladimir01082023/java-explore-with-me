@@ -1,12 +1,15 @@
 package ru.practicum.controller;
 
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.EndpointHit;
 import ru.practicum.ViewStats;
+import ru.practicum.exception.ValidationException;
 import ru.practicum.service.StatsService;
 
 import java.time.LocalDateTime;
@@ -21,6 +24,7 @@ public class StatsController {
     private static final String FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     @PostMapping("/hit")
+    @ResponseStatus(HttpStatus.CREATED)
     public void postHit(@Validated @RequestBody EndpointHit hit) {
         log.info("Posting hit: {}", hit);
         statsService.postHit(hit);
@@ -32,6 +36,10 @@ public class StatsController {
                                     @RequestParam(required = false) List<String> uris,
                                     @RequestParam(defaultValue = "false") Boolean unique) {
         log.info("Getting stats");
+        if (start.isAfter(end)) {
+            throw new ValidationException(
+                    String.format("Unexpected time interval: start %s; end %s", start, end));
+        }
         return statsService.getStats(start, end, uris, unique);
     }
 }
