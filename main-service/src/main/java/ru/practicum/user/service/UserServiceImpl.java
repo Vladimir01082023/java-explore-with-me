@@ -15,7 +15,6 @@ import ru.practicum.util.CheckExistence;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -76,9 +75,4 @@ public class UserServiceImpl implements UserService {
         log.info("User [{}] was deleted", id);
     }
 
-    public static boolean patternMatches(String emailAddress, String regexPattern) {
-        return Pattern.compile(regexPattern)
-                .matcher(emailAddress)
-                .matches();
-    }
 }

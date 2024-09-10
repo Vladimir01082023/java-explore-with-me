@@ -34,9 +34,9 @@ public class CategoryServiceImpl implements CategoryService {
         if (newCategoryDto.getName().isEmpty() || newCategoryDto.getName().isBlank()) {
             throw new ValidationException("Category name cannot be empty or null");
         }
-        if (newCategoryDto.getName().length() > 50) {
-            throw new ValidationException("Category name cannot be longer than 50 characters");
-        }
+//        if (newCategoryDto.getName().length() > 50) {
+//            throw new ValidationException("Category name cannot be longer than 50 characters");
+//        }
         log.info("Start creating new category");
         if (categoryRepository.findByName(newCategoryDto.getName()).isPresent()) {
             log.info("Category with name {} already exists", newCategoryDto.getName());

@@ -11,21 +11,22 @@ import ru.practicum.ViewStats;
 import ru.practicum.category.mapper.CategoryMapper;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.service.CategoryService;
-import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.dto.*;
 import ru.practicum.event.enums.Sort;
 import ru.practicum.event.enums.State;
 import ru.practicum.event.enums.StateAction;
+import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
+import ru.practicum.exception.ValidationException;
 import ru.practicum.location.repository.LocationRepository;
 import ru.practicum.request.enums.RequestStatus;
+import ru.practicum.request.model.Request;
 import ru.practicum.request.repository.RequestRepository;
 import ru.practicum.user.model.User;
 import ru.practicum.util.CheckExistence;
-import ru.practicum.exception.ValidationException;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -267,9 +268,11 @@ public class EventServiceImpl implements EventService {
         events.forEach(event ->
                 event.setViews(views.getOrDefault(event.getId(), 0L)));
 
+        List<Request> confirmedRequests = requestRepository.findAllByEventIdInAndStatus(new ArrayList<>(eventIds),
+                RequestStatus.CONFIRMED);
+
         events.forEach(event ->
-                event.setConfirmedRequests((long) requestRepository.findAllByEventIdInAndStatus(new ArrayList<>(eventIds),
-                        RequestStatus.CONFIRMED).size()));
+                event.setConfirmedRequests((long) confirmedRequests.size()));
 
         return events
                 .stream()

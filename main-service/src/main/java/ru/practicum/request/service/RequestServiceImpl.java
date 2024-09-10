@@ -1,6 +1,5 @@
 package ru.practicum.request.service;
 
-import ru.practicum.exception.ValidationException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exception.ConflictException;
+import ru.practicum.exception.ValidationException;
 import ru.practicum.request.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.request.dto.EventRequestStatusUpdateResult;
 import ru.practicum.request.dto.ParticipationRequestDto;
@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static ru.practicum.event.enums.State.PUBLISHED;
@@ -58,10 +57,11 @@ public class RequestServiceImpl implements RequestService {
                 .status(event.getRequestModeration() ? PENDING : CONFIRMED)
                 .build();
 
-        Optional<Request> req = requestRepository.findByRequesterIdAndEventId(userId, eventId);
-        if (req.isPresent()) {
-            throw new ConflictException("Repeated request!");
-        }
+        Request req = requestRepository.findByRequesterIdAndEventId(userId, eventId)
+                .orElseThrow(() -> new ConflictException("Repeated request!"));
+//        if (req.isPresent()) {
+//            throw new ConflictException("Repeated request!");
+//        }
         if (event.getInitiator().equals(user)) {
             throw new ConflictException("Event owner can't participate in event");
         }
