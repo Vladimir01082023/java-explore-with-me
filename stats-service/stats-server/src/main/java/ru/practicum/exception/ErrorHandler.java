@@ -18,4 +18,10 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlerValidationException(final ValidationException e) {
+        log.error(e.toString());
+        return new ErrorResponse(e.getMessage());
+    }
 }
