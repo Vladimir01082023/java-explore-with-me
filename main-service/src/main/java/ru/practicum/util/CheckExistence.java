@@ -70,6 +70,7 @@ public class CheckExistence {
                 () -> new NotFoundException(String.format("Rating %d not found", id))
         );
     }
+
     public void checkCategoryExistence(NewCategoryDto category) {
         if (categoryRepository.existsByName(category.getName())) {
             throw new ConflictException(String.format("Category %s already exists",
