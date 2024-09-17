@@ -22,6 +22,8 @@ import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.ValidationException;
 import ru.practicum.location.repository.LocationRepository;
+import ru.practicum.rating.model.Rating;
+import ru.practicum.rating.repository.RatingRepository;
 import ru.practicum.request.enums.RequestStatus;
 import ru.practicum.request.model.Request;
 import ru.practicum.request.repository.RequestRepository;
@@ -55,6 +57,7 @@ public class EventServiceImpl implements EventService {
     private final CheckExistence checkExistence;
     private final LocationRepository locationRepository;
     private final CategoryService categoryService;
+    private final RatingRepository ratingRepository;
 
     @Override
     public List<EventFullDto> findAllEventsByAdmin(List<Long> users, List<State> states, List<Long> categories,
@@ -229,7 +232,7 @@ public class EventServiceImpl implements EventService {
                                           Long eventId,
                                           UpdateEventUserRequest request) {
 
-        Event event = EventMapper.toEvent(getEventByUserId(userId, eventId)); //TODO
+        Event event = EventMapper.toEvent(getEventByUserId(userId, eventId));
 
         checkEventStatus(event, request, List.of(State.PENDING, State.CANCELED));
 
@@ -243,6 +246,21 @@ public class EventServiceImpl implements EventService {
         }
 
         return EventMapper.toEventFullDto(eventRepository.save(updateEvent(event, request)));
+    }
+
+    @Override
+    public EventRateDto getRateOfEvent(Long eventId) {
+        if (!eventRepository.existsById(eventId)) {
+            throw new ValidationException(eventId + " does not exist");
+        }
+        double rate = ratingRepository.getByEventId(eventId).stream()
+                .map(Rating::getRate)
+                .mapToInt(Integer::intValue)
+                .average()
+                .getAsDouble();
+        Event event = checkExistence.getEvent(eventId);
+        log.info("FINDING RATE OF EVENT");
+        return EventMapper.toEventRateDto(event, rate);
     }
 
     private Event updateEvent(Event event, UpdateEventRequest request) {

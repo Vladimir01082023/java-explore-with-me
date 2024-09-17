@@ -74,6 +74,7 @@ public class Event {
 
     private Long views;
 
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

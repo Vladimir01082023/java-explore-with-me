@@ -12,6 +12,8 @@ import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.dto.UpdateEventUserRequest;
 import ru.practicum.event.service.EventService;
+import ru.practicum.rating.dto.RatingDto;
+import ru.practicum.rating.service.RatingService;
 import ru.practicum.request.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.request.dto.EventRequestStatusUpdateResult;
 import ru.practicum.request.dto.ParticipationRequestDto;
@@ -27,6 +29,7 @@ public class PrivateEventController {
 
     private final EventService eventService;
     private final RequestService requestService;
+    private final RatingService ratingService;
 
     @GetMapping
     public List<EventFullDto> getAllEvents(@PathVariable Long userId,
@@ -72,5 +75,23 @@ public class PrivateEventController {
                                                          @RequestBody EventRequestStatusUpdateRequest updateRequest) {
         log.info("STARTING UPDATE REQUEST EVENT BY USER");
         return requestService.updateRequestsByUser(userId, eventId, updateRequest);
+    }
+
+    @PostMapping("/rate")
+    public RatingDto addRate(@RequestBody RatingDto ratingDto) {
+        log.info("STARTING RATING EVENT BY USER");
+        return ratingService.addRate(ratingDto);
+    }
+
+    @PatchMapping("/rate/{ratingId}")
+    public RatingDto updateRate(@RequestBody RatingDto ratingDto, @PathVariable Long ratingId) {
+        log.info("STARTING UPDATE RATE OF EVENT BY USER");
+        return ratingService.updateRate(ratingDto, ratingId);
+    }
+
+    @DeleteMapping("/rate/{ratingId}")
+    public void deleteRate(@PathVariable Long userId, @PathVariable Long ratingId) {
+        log.info("STARTING DELETE RATE OF EVENT BY USER");
+        ratingService.deleteRate(userId, ratingId);
     }
 }
