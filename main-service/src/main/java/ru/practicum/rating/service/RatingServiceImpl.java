@@ -53,8 +53,8 @@ public class RatingServiceImpl implements RatingService {
             throw new ValidationException(ratingId + " does not exist");
         }
 
-        if (ratingRepository.getById(ratingId).getUser().getId() != ratingDto.getUserId() &&
-                ratingRepository.getById(ratingId).getEvent().getId() != ratingDto.getEventId()) {
+        if (!ratingRepository.getById(ratingId).getUser().getId().equals(ratingDto.getUserId()) &&
+                !ratingRepository.getById(ratingId).getEvent().getId().equals(ratingDto.getEventId())) {
             throw new ValidationException(String.format("User {} never rated event {}",
                     ratingDto.getUserId(), ratingDto.getEventId()));
         }
@@ -83,7 +83,7 @@ public class RatingServiceImpl implements RatingService {
             throw new ValidationException(ratingId + " does not exist");
         }
 
-        if (ratingRepository.getById(ratingId).getUser().getId() != userId) {
+        if (!ratingRepository.getById(ratingId).getUser().getId().equals(userId)) {
             throw new ValidationException("Only author of rate can delete it!");
         }
 
