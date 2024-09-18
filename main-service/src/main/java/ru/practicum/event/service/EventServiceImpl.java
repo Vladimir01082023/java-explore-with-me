@@ -256,7 +256,7 @@ public class EventServiceImpl implements EventService {
 
         List<Optional<Rating>> listOfRating = ratingRepository.getByEventId(eventId);
 
-        if (listOfRating.size() == 0){
+        if (listOfRating.size() == 0) {
             throw new ValidationException(" does not exist");
         }
 
