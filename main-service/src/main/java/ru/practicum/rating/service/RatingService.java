@@ -9,6 +9,4 @@ public interface RatingService {
 
     void deleteRate(Long ratingId, Long userId);
 
-    double getRateOfEvent(Long eventId);
-
 }

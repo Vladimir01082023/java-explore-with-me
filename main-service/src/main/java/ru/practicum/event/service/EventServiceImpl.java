@@ -251,13 +251,21 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventRateDto getRateOfEvent(Long eventId) {
         if (!eventRepository.existsById(eventId)) {
-            throw new ValidationException(eventId + " does not exist");
+            throw new ValidationException("Event with id " + eventId + " is not rated");
         }
-        double rate = ratingRepository.getByEventId(eventId).stream()
-                .map(Rating::getRate)
+
+        List<Optional<Rating>> listOfRating = ratingRepository.getByEventId(eventId);
+
+        if (listOfRating.size() == 0){
+            throw new ValidationException(" does not exist");
+        }
+
+        double rate = listOfRating.stream()
+                .map(rating -> rating.get().getRate())
                 .mapToInt(Integer::intValue)
                 .average()
                 .getAsDouble();
+
         Event event = checkExistence.getEvent(eventId);
         log.info("FINDING RATE OF EVENT");
         return EventMapper.toEventRateDto(event, rate);

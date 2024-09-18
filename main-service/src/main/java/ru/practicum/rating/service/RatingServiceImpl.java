@@ -91,22 +91,6 @@ public class RatingServiceImpl implements RatingService {
         ratingRepository.deleteById(ratingId);
     }
 
-    @Override
-    public double getRateOfEvent(Long eventId) {
-        if (!eventRepository.existsById(eventId)) {
-            throw new ValidationException(eventId + " does not exist");
-        }
-        if (!checkEventPublished(eventId)) {
-            throw new ValidationException("Event is not published");
-        }
-        double rate = ratingRepository.getByEventId(eventId).stream()
-                .map(Rating::getRate)
-                .mapToInt(Integer::intValue)
-                .average()
-                .getAsDouble();
-        return rate;
-    }
-
     public boolean checkEventPublished(Long eventId) {
         State state = eventRepository.getById(eventId).getState();
         if (state.equals(State.PUBLISHED)) {
