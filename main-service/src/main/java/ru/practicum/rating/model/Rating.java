@@ -1,29 +1,38 @@
-package ru.practicum.location.model;
+package ru.practicum.rating.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
+import ru.practicum.event.model.Event;
+import ru.practicum.user.model.User;
 
 import java.util.Objects;
 
+@Entity
+@Table(name = "rating")
 @Getter
 @Setter
-@Entity
-@Table(name = "locations")
-@NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class Location {
+@NoArgsConstructor
+public class Rating {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "lat", nullable = false)
-    private float lat;
+    @ManyToOne
+    @JoinColumn(name = "author_id", referencedColumnName = "id", nullable = false)
+    private User user;
 
-    @Column(name = "lon", nullable = false)
-    private float lon;
+    @ManyToOne
+    @JoinColumn(name = "event_id", referencedColumnName = "id", nullable = false)
+    private Event event;
+
+    @Column(name = "rate", nullable = false)
+    private int rate;
 
     @Override
     public final boolean equals(Object o) {
@@ -32,8 +41,8 @@ public class Location {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Location location = (Location) o;
-        return getId() != null && Objects.equals(getId(), location.getId());
+        Rating rating = (Rating) o;
+        return getId() != null && Objects.equals(getId(), rating.getId());
     }
 
     @Override

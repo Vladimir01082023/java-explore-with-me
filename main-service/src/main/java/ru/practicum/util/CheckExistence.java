@@ -12,11 +12,13 @@ import ru.practicum.event.model.Event;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
+import ru.practicum.exception.ValidationException;
+import ru.practicum.rating.model.Rating;
+import ru.practicum.rating.repository.RatingRepository;
 import ru.practicum.request.model.Request;
 import ru.practicum.request.repository.RequestRepository;
 import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
-import ru.practicum.exception.ValidationException;
 
 import java.time.LocalDateTime;
 
@@ -30,6 +32,7 @@ public class CheckExistence {
     private final CategoryRepository categoryRepository;
     private final RequestRepository requestRepository;
     private final CompilationRepository compilationRepository;
+    private final RatingRepository ratingRepository;
 
 
     public Event getEvent(Long id) {
@@ -59,6 +62,12 @@ public class CheckExistence {
     public Compilation getCompilation(Long id) {
         return compilationRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Compilation id %d not found", id))
+        );
+    }
+
+    public Rating getRating(Long id) {
+        return ratingRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format("Rating %d not found", id))
         );
     }
 

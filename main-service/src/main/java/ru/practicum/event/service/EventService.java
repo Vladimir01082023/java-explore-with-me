@@ -30,5 +30,7 @@ public interface EventService {
                                               HttpServletRequest request);
 
     EventFullDto updateEventByUser(Long userId, Long eventId, UpdateEventUserRequest userRequest);
+
+    EventRateDto getRateOfEvent(Long eventId);
 }
 

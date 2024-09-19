@@ -3,6 +3,7 @@ package ru.practicum.event.mapper;
 import ru.practicum.category.mapper.CategoryMapper;
 import ru.practicum.category.model.Category;
 import ru.practicum.event.dto.EventFullDto;
+import ru.practicum.event.dto.EventRateDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.model.Event;
@@ -78,5 +79,15 @@ public class EventMapper {
         event.setConfirmedRequests(Long.valueOf(eventFullDto.getConfirmedRequests()));
         event.setViews(eventFullDto.getViews());
         return event;
+    }
+
+    public static EventRateDto toEventRateDto(Event event, double rate) {
+        EventRateDto dto = new EventRateDto();
+        dto.setEventId(event.getId());
+        dto.setRate(rate);
+        dto.setAnnotation(event.getAnnotation());
+        dto.setDescription(event.getDescription());
+        dto.setTitle(event.getTitle());
+        return dto;
     }
 }

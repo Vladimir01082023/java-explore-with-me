@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.event.dto.EventFullDto;
+import ru.practicum.event.dto.EventRateDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.enums.Sort;
 import ru.practicum.event.service.EventService;
@@ -45,5 +46,11 @@ public class PublicEventController {
     @GetMapping("/{id}")
     public EventFullDto getEvent(@PathVariable Long id, HttpServletRequest request) {
         return eventService.getEventById(id, request);
+    }
+
+    @GetMapping("/rate/{eventId}")
+    public EventRateDto getEventRate(@PathVariable Long eventId) {
+        log.info("GETTING RATE OF EVENT {}", eventId);
+        return eventService.getRateOfEvent(eventId);
     }
 }
